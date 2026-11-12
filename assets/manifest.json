@@ -1,0 +1,667 @@
+{
+ "premium-screw": {
+  "w": 906,
+  "h": 646,
+  "files": {
+   "lg": {
+    "file": "premium-screw-lg.webp",
+    "w": 906,
+    "h": 646,
+    "kb": 28
+   },
+   "md": {
+    "file": "premium-screw-md.webp",
+    "w": 720,
+    "h": 513,
+    "kb": 23
+   },
+   "sm": {
+    "file": "premium-screw-sm.webp",
+    "w": 360,
+    "h": 257,
+    "kb": 10
+   }
+  }
+ },
+ "premium-screw-pair": {
+  "w": 1346,
+  "h": 2628,
+  "files": {
+   "lg": {
+    "file": "premium-screw-pair-lg.webp",
+    "w": 717,
+    "h": 1400,
+    "kb": 66
+   },
+   "md": {
+    "file": "premium-screw-pair-md.webp",
+    "w": 369,
+    "h": 720,
+    "kb": 29
+   },
+   "sm": {
+    "file": "premium-screw-pair-sm.webp",
+    "w": 184,
+    "h": 360,
+    "kb": 12
+   }
+  }
+ },
+ "e-series-screw": {
+  "w": 504,
+  "h": 343,
+  "files": {
+   "lg": {
+    "file": "e-series-screw-lg.webp",
+    "w": 504,
+    "h": 343,
+    "kb": 19
+   },
+   "md": {
+    "file": "e-series-screw-md.webp",
+    "w": 504,
+    "h": 343,
+    "kb": 19
+   },
+   "sm": {
+    "file": "e-series-screw-sm.webp",
+    "w": 360,
+    "h": 245,
+    "kb": 13
+   }
+  }
+ },
+ "high-pressure": {
+  "w": 327,
+  "h": 299,
+  "files": {
+   "lg": {
+    "file": "high-pressure-lg.webp",
+    "w": 327,
+    "h": 299,
+    "kb": 14
+   },
+   "md": {
+    "file": "high-pressure-md.webp",
+    "w": 327,
+    "h": 299,
+    "kb": 14
+   },
+   "sm": {
+    "file": "high-pressure-sm.webp",
+    "w": 327,
+    "h": 299,
+    "kb": 14
+   }
+  }
+ },
+ "laser": {
+  "w": 4379,
+  "h": 2052,
+  "files": {
+   "lg": {
+    "file": "laser-lg.webp",
+    "w": 1400,
+    "h": 656,
+    "kb": 65
+   },
+   "md": {
+    "file": "laser-md.webp",
+    "w": 720,
+    "h": 337,
+    "kb": 32
+   },
+   "sm": {
+    "file": "laser-sm.webp",
+    "w": 360,
+    "h": 169,
+    "kb": 15
+   }
+  }
+ },
+ "he-series": {
+  "w": 3638,
+  "h": 2046,
+  "files": {
+   "lg": {
+    "file": "he-series-lg.webp",
+    "w": 1400,
+    "h": 787,
+    "kb": 61
+   },
+   "md": {
+    "file": "he-series-md.webp",
+    "w": 720,
+    "h": 405,
+    "kb": 28
+   },
+   "sm": {
+    "file": "he-series-sm.webp",
+    "w": 360,
+    "h": 202,
+    "kb": 13
+   }
+  }
+ },
+ "premium-recip": {
+  "w": 3299,
+  "h": 2027,
+  "files": {
+   "lg": {
+    "file": "premium-recip-lg.webp",
+    "w": 1400,
+    "h": 860,
+    "kb": 103
+   },
+   "md": {
+    "file": "premium-recip-md.webp",
+    "w": 720,
+    "h": 442,
+    "kb": 47
+   },
+   "sm": {
+    "file": "premium-recip-sm.webp",
+    "w": 360,
+    "h": 221,
+    "kb": 19
+   }
+  }
+ },
+ "e-series-recip": {
+  "w": 2653,
+  "h": 1972,
+  "files": {
+   "lg": {
+    "file": "e-series-recip-lg.webp",
+    "w": 1400,
+    "h": 1041,
+    "kb": 101
+   },
+   "md": {
+    "file": "e-series-recip-md.webp",
+    "w": 720,
+    "h": 535,
+    "kb": 47
+   },
+   "sm": {
+    "file": "e-series-recip-sm.webp",
+    "w": 360,
+    "h": 268,
+    "kb": 21
+   }
+  }
+ },
+ "small-piston": {
+  "w": 1904,
+  "h": 1978,
+  "files": {
+   "lg": {
+    "file": "small-piston-lg.webp",
+    "w": 1348,
+    "h": 1400,
+    "kb": 126
+   },
+   "md": {
+    "file": "small-piston-md.webp",
+    "w": 693,
+    "h": 720,
+    "kb": 60
+   },
+   "sm": {
+    "file": "small-piston-sm.webp",
+    "w": 347,
+    "h": 360,
+    "kb": 29
+   }
+  }
+ },
+ "small-screw": {
+  "w": 798,
+  "h": 765,
+  "files": {
+   "lg": {
+    "file": "small-screw-lg.webp",
+    "w": 798,
+    "h": 765,
+    "kb": 45
+   },
+   "md": {
+    "file": "small-screw-md.webp",
+    "w": 720,
+    "h": 690,
+    "kb": 43
+   },
+   "sm": {
+    "file": "small-screw-sm.webp",
+    "w": 360,
+    "h": 345,
+    "kb": 18
+   }
+  }
+ },
+ "oil-free": {
+  "w": 2977,
+  "h": 2051,
+  "files": {
+   "lg": {
+    "file": "oil-free-lg.webp",
+    "w": 1400,
+    "h": 965,
+    "kb": 61
+   },
+   "md": {
+    "file": "oil-free-md.webp",
+    "w": 720,
+    "h": 496,
+    "kb": 32
+   },
+   "sm": {
+    "file": "oil-free-sm.webp",
+    "w": 360,
+    "h": 248,
+    "kb": 14
+   }
+  }
+ },
+ "air-treatment": {
+  "w": 5400,
+  "h": 2139,
+  "files": {
+   "lg": {
+    "file": "air-treatment-lg.webp",
+    "w": 1400,
+    "h": 555,
+    "kb": 61
+   },
+   "md": {
+    "file": "air-treatment-md.webp",
+    "w": 720,
+    "h": 285,
+    "kb": 29
+   },
+   "sm": {
+    "file": "air-treatment-sm.webp",
+    "w": 360,
+    "h": 143,
+    "kb": 14
+   }
+  }
+ },
+ "portable": {
+  "w": 924,
+  "h": 700,
+  "files": {
+   "lg": {
+    "file": "portable-lg.webp",
+    "w": 924,
+    "h": 700,
+    "kb": 44
+   },
+   "md": {
+    "file": "portable-md.webp",
+    "w": 720,
+    "h": 545,
+    "kb": 35
+   },
+   "sm": {
+    "file": "portable-sm.webp",
+    "w": 360,
+    "h": 273,
+    "kb": 15
+   }
+  }
+ },
+ "vacuum-pump": {
+  "w": 2901,
+  "h": 2286,
+  "files": {
+   "lg": {
+    "file": "vacuum-pump-lg.webp",
+    "w": 1400,
+    "h": 1103,
+    "kb": 39
+   },
+   "md": {
+    "file": "vacuum-pump-md.webp",
+    "w": 720,
+    "h": 567,
+    "kb": 19
+   },
+   "sm": {
+    "file": "vacuum-pump-sm.webp",
+    "w": 360,
+    "h": 284,
+    "kb": 9
+   }
+  }
+ },
+ "blower": {
+  "w": 2535,
+  "h": 2470,
+  "files": {
+   "lg": {
+    "file": "blower-lg.webp",
+    "w": 1400,
+    "h": 1364,
+    "kb": 52
+   },
+   "md": {
+    "file": "blower-md.webp",
+    "w": 720,
+    "h": 702,
+    "kb": 24
+   },
+   "sm": {
+    "file": "blower-sm.webp",
+    "w": 360,
+    "h": 351,
+    "kb": 13
+   }
+  }
+ },
+ "team": {
+  "w": 1705,
+  "h": 803,
+  "files": {
+   "lg": {
+    "file": "team-lg.webp",
+    "w": 1400,
+    "h": 659,
+    "kb": 73
+   },
+   "md": {
+    "file": "team-md.webp",
+    "w": 720,
+    "h": 339,
+    "kb": 30
+   },
+   "sm": {
+    "file": "team-sm.webp",
+    "w": 360,
+    "h": 170,
+    "kb": 13
+   }
+  }
+ },
+ "logo-tagline": {
+  "w": 961,
+  "h": 368,
+  "files": {
+   "lg": {
+    "file": "logo-tagline-lg.webp",
+    "w": 961,
+    "h": 368,
+    "kb": 23
+   },
+   "md": {
+    "file": "logo-tagline-md.webp",
+    "w": 720,
+    "h": 276,
+    "kb": 28
+   },
+   "sm": {
+    "file": "logo-tagline-sm.webp",
+    "w": 360,
+    "h": 138,
+    "kb": 13
+   }
+  }
+ },
+ "logo-word": {
+  "w": 987,
+  "h": 301,
+  "files": {
+   "lg": {
+    "file": "logo-word-lg.webp",
+    "w": 987,
+    "h": 301,
+    "kb": 15
+   },
+   "md": {
+    "file": "logo-word-md.webp",
+    "w": 720,
+    "h": 220,
+    "kb": 13
+   },
+   "sm": {
+    "file": "logo-word-sm.webp",
+    "w": 360,
+    "h": 110,
+    "kb": 6
+   }
+  }
+ },
+ "cert-make-in-india": {
+  "w": 480,
+  "h": 265,
+  "files": {
+   "one": {
+    "file": "cert-make-in-india.webp",
+    "w": 480,
+    "h": 265
+   }
+  }
+ },
+ "cert-iso-9001": {
+  "w": 480,
+  "h": 265,
+  "files": {
+   "one": {
+    "file": "cert-iso-9001.webp",
+    "w": 480,
+    "h": 265
+   }
+  }
+ },
+ "cert-ias": {
+  "w": 480,
+  "h": 265,
+  "files": {
+   "one": {
+    "file": "cert-ias.webp",
+    "w": 480,
+    "h": 265
+   }
+  }
+ },
+ "cert-msme": {
+  "w": 480,
+  "h": 265,
+  "files": {
+   "one": {
+    "file": "cert-msme.webp",
+    "w": 480,
+    "h": 265
+   }
+  }
+ },
+ "cert-iaf": {
+  "w": 480,
+  "h": 264,
+  "files": {
+   "one": {
+    "file": "cert-iaf.webp",
+    "w": 480,
+    "h": 264
+   }
+  }
+ },
+ "cert-ce": {
+  "w": 480,
+  "h": 266,
+  "files": {
+   "one": {
+    "file": "cert-ce.webp",
+    "w": 480,
+    "h": 266
+   }
+  }
+ },
+ "client-apache": {
+  "w": 480,
+  "h": 265,
+  "files": {
+   "one": {
+    "file": "client-apache.webp",
+    "w": 480,
+    "h": 265
+   }
+  }
+ },
+ "client-jintech": {
+  "w": 480,
+  "h": 265,
+  "files": {
+   "one": {
+    "file": "client-jintech.webp",
+    "w": 480,
+    "h": 265
+   }
+  }
+ },
+ "client-ti-india": {
+  "w": 480,
+  "h": 265,
+  "files": {
+   "one": {
+    "file": "client-ti-india.webp",
+    "w": 480,
+    "h": 265
+   }
+  }
+ },
+ "client-ronald-leeman": {
+  "w": 480,
+  "h": 265,
+  "files": {
+   "one": {
+    "file": "client-ronald-leeman.webp",
+    "w": 480,
+    "h": 265
+   }
+  }
+ },
+ "client-tvs": {
+  "w": 480,
+  "h": 266,
+  "files": {
+   "one": {
+    "file": "client-tvs.webp",
+    "w": 480,
+    "h": 266
+   }
+  }
+ },
+ "client-vtk": {
+  "w": 480,
+  "h": 266,
+  "files": {
+   "one": {
+    "file": "client-vtk.webp",
+    "w": 480,
+    "h": 266
+   }
+  }
+ },
+ "client-kandukuri": {
+  "w": 480,
+  "h": 266,
+  "files": {
+   "one": {
+    "file": "client-kandukuri.webp",
+    "w": 480,
+    "h": 266
+   }
+  }
+ },
+ "client-murugappa": {
+  "w": 480,
+  "h": 265,
+  "files": {
+   "one": {
+    "file": "client-murugappa.webp",
+    "w": 480,
+    "h": 265
+   }
+  }
+ },
+ "client-medimix": {
+  "w": 480,
+  "h": 265,
+  "files": {
+   "one": {
+    "file": "client-medimix.webp",
+    "w": 480,
+    "h": 265
+   }
+  }
+ },
+ "client-jana-engineering": {
+  "w": 480,
+  "h": 265,
+  "files": {
+   "one": {
+    "file": "client-jana-engineering.webp",
+    "w": 480,
+    "h": 265
+   }
+  }
+ },
+ "client-rettai-kili": {
+  "w": 480,
+  "h": 266,
+  "files": {
+   "one": {
+    "file": "client-rettai-kili.webp",
+    "w": 480,
+    "h": 266
+   }
+  }
+ },
+ "client-stanfab": {
+  "w": 480,
+  "h": 265,
+  "files": {
+   "one": {
+    "file": "client-stanfab.webp",
+    "w": 480,
+    "h": 265
+   }
+  }
+ },
+ "client-lt": {
+  "w": 480,
+  "h": 266,
+  "files": {
+   "one": {
+    "file": "client-lt.webp",
+    "w": 480,
+    "h": 266
+   }
+  }
+ },
+ "portable-poster": {
+  "w": 800,
+  "h": 1132,
+  "files": {
+   "lg": {
+    "file": "portable-poster-lg.webp",
+    "w": 800,
+    "h": 1132,
+    "kb": 83
+   },
+   "md": {
+    "file": "portable-poster-md.webp",
+    "w": 509,
+    "h": 720,
+    "kb": 46
+   },
+   "sm": {
+    "file": "portable-poster-sm.webp",
+    "w": 254,
+    "h": 360,
+    "kb": 16
+   }
+  }
+ }
+}
