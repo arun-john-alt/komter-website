@@ -419,11 +419,13 @@ address { font-style: normal; }
 .page-hd { padding: 20px var(--gr) 8px var(--gl); }
 .page-hd h1 {
   font-weight: 900; font-stretch: 112%; font-size: clamp(29px, calc(10vw - 4px), 44px);
-  line-height: .98; letter-spacing: -.012em; max-width: 14ch;
+  line-height: .98; letter-spacing: -.012em; max-width: 10.3em; /* = 14ch in Archivo; em holds while the fallback shows */
   min-height: 2.94em;   /* three Archivo lines, held while the fallback shows */
 }
 @media (max-width: 359px) { .page-hd h1 { min-height: 3.92em; } }
 .page-hd .lede { margin-top: 12px; font-size: 17px; line-height: 1.45; max-width: 52ch; }
+/* Tablets: the fallback face sets the lede in 4 lines, Archivo in 3; hold 4 so nothing below jumps when it lands. */
+@media (min-width: 600px) and (max-width: 1023.98px) { .page-hd .lede { min-height: 5.85em; } }
 
 .family { margin-top: 30px; scroll-margin-top: 0; }
 .fam-band {
