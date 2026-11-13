@@ -7,6 +7,19 @@
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var each = function (list, fn) { Array.prototype.forEach.call(list, fn); };
 
+  /* ---------- header: separates from the hero once the page moves ----------
+     is-scrolled adds the hairline and shadow and lets the bar settle (CSS: transform, opacity and a pseudo-element only). */
+  var bar = document.querySelector('.bar');
+  if (bar) {
+    var scrolled = null;
+    var onBarScroll = function () {
+      var s = (window.pageYOffset || document.documentElement.scrollTop || 0) > 8;
+      if (s !== scrolled) { scrolled = s; bar.classList.toggle('is-scrolled', s); }
+    };
+    window.addEventListener('scroll', onBarScroll, { passive: true });
+    onBarScroll();
+  }
+
   /* ---------- full-screen menu: a real modal dialog ----------
      Without JS the MENU cell is a link to the site map in the footer. */
   var dlg = document.getElementById('menu');
@@ -211,5 +224,112 @@
     };
     window.addEventListener('hashchange', fromHash);
     fromHash();
+  }
+  /* ---------- motion: calm panel feel ----------
+     Skipped with reduced motion. Everything stays visible if this fails: only things below the first screen are
+     hidden, and a 2.5 s failsafe lifts the hiding if the observer never reports. */
+  if (!reduce && 'IntersectionObserver' in window) {
+    var html = document.documentElement;
+    html.classList.add('mo');
+    var seen = false;
+    window.setTimeout(function () { if (!seen) html.classList.remove('mo'); }, 2500);
+    var vh = window.innerHeight || 700;
+
+    // number cards count up once when they land
+    var countUp = function (card, delay) {
+      var n = card.querySelector('.num-n');
+      var t = n && n.firstChild;
+      if (!t || t.nodeType !== 3) return;
+      var end = parseInt(t.nodeValue, 10);
+      if (isNaN(end)) return;
+      t.nodeValue = '0';
+      var t0 = null;
+      var step = function (now) {
+        if (t0 === null) t0 = now;
+        var k = Math.min(1, Math.max(0, (now - t0 - delay) / 900));
+        t.nodeValue = String(Math.round(end * (1 - Math.pow(1 - k, 3))));
+        if (k < 1) window.requestAnimationFrame(step); else t.nodeValue = String(end);
+      };
+      window.requestAnimationFrame(step);
+    };
+
+    var io = new IntersectionObserver(function (entries) {
+      seen = true;
+      var n = 0;
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var el = en.target, d = Math.min(n, 4) * 70;
+        n += 1;
+        io.unobserve(el);
+        el.style.transitionDelay = d + 'ms';
+        if (el.classList.contains('num')) countUp(el, d);
+        el.classList.add('in');
+        window.setTimeout(function () {   // hand the element back to its own hover/press transitions
+          el.classList.remove('rv', 'in');
+          el.style.transitionDelay = '';
+        }, 600 + d);
+      });
+    }, { rootMargin: '0px 0px -6% 0px' });
+    each(document.querySelectorAll('.panel, .about-head, .about-grid, .fam-list > .fam, .num, .line, .words, .foot'), function (el) {
+      if (el.getBoundingClientRect().top < vh * 0.98) return;   // first screen (and anything above it) is never gated
+      el.classList.add('rv');
+      io.observe(el);
+    });
+
+    // hero corner card: mark the slide that is in view
+    each(document.querySelectorAll('.hcard-track'), function (track) {
+      var slides = track.querySelectorAll('.hslide');
+      if (!slides.length) return;
+      slides[0].classList.add('is-on');
+      var sio = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { e.target.classList.toggle('is-on', e.isIntersecting); });
+      }, { root: track, threshold: 0.6 });
+      each(slides, function (s) { sio.observe(s); });
+    });
+
+    // range carousel: the card nearest the middle of the row
+    var rtrack = document.querySelector('.range-track');
+    if (rtrack) {
+      var near = null, rr = 0;
+      var markNear = function () {
+        rr = 0;
+        var tr = rtrack.getBoundingClientRect(), mid = tr.left + tr.width / 2, best = null, bd = 1e9;
+        each(rtrack.children, function (c) {
+          var r = c.getBoundingClientRect(), dd = Math.abs(r.left + r.width / 2 - mid);
+          if (dd < bd) { bd = dd; best = c; }
+        });
+        if (best !== near) {
+          if (near) near.classList.remove('is-near');
+          if (best) best.classList.add('is-near');
+          near = best;
+        }
+      };
+      rtrack.addEventListener('scroll', function () { if (!rr) rr = window.requestAnimationFrame(markNear); }, { passive: true });
+      markNear();
+    }
+
+    // family words: drift a few px with the page's scroll, smoothed (the exponential ease Swathi's portfolio uses)
+    var words = document.querySelector('.words-list');
+    if (words) {
+      var target = 0, cur = 0, last = 0, running = false, inView = false;
+      var measure = function () {
+        var h = window.innerHeight || vh, r = words.getBoundingClientRect();
+        var p = ((r.top + r.height / 2) - h / 2) / h;
+        target = Math.max(-1, Math.min(1, p)) * 14;
+      };
+      var tick = function (now) {
+        var dt = Math.min(now - last, 64); last = now;
+        cur += (target - cur) * (1 - Math.exp(-dt / 150));
+        words.style.setProperty('--wd', cur.toFixed(2) + 'px');
+        if (inView || Math.abs(target - cur) > 0.05) window.requestAnimationFrame(tick); else running = false;
+      };
+      var kick = function () { if (!running) { running = true; last = window.performance.now(); window.requestAnimationFrame(tick); } };
+      var wio = new IntersectionObserver(function (es) {
+        inView = es[es.length - 1].isIntersecting;
+        if (inView) { measure(); kick(); }
+      });
+      wio.observe(words);
+      window.addEventListener('scroll', function () { if (inView) { measure(); kick(); } }, { passive: true });
+    }
   }
 })();

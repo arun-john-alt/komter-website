@@ -34,6 +34,7 @@
   --wide: 12px;          /* content panels: 12px on phones, 40px on desktop */
   --space: 80px;
   --ease: cubic-bezier(.22, .61, .36, 1);
+  --out: cubic-bezier(.23, 1, .32, 1);
   --font: "Figtree", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
 }
 @media (min-width: 768px) { :root { --pad: 28px; --gutter: 40px; } }
@@ -66,9 +67,9 @@ button, input, select { font: inherit; letter-spacing: inherit; color: inherit; 
   display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--ink); font-weight: 500;
   text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px;
 }
-.tlink svg { width: 12px; height: 12px; flex: none; transition: transform .2s var(--ease); }
+.tlink svg { width: 12px; height: 12px; flex: none; transition: transform .25s var(--out); }
 .tlink:hover { color: var(--accent); }
-.tlink:hover svg { transform: translateX(2px); }
+.tlink:hover svg, .tlink:focus-visible svg, .tlink:active svg { transform: translateX(3px); }
 .on-dark .tlink { color: #fff; }
 
 .skip {
@@ -92,15 +93,17 @@ button, input, select { font: inherit; letter-spacing: inherit; color: inherit; 
   display: inline-flex; align-items: center; gap: 14px; min-height: 48px;
   padding: 6px 6px 6px 22px; border-radius: 100px; border: 0;
   background: #fff; color: var(--ink); text-decoration: none; font-size: 16px; line-height: 20px; font-weight: 500;
-  cursor: pointer; transition: transform .2s var(--ease);
+  cursor: pointer; transition: transform .2s var(--out), background-color .2s var(--out), box-shadow .2s var(--out);
 }
-.pill:active { transform: scale(.98); }
+.pill:active { transform: scale(.97); }
 .chip {
   flex: none; display: grid; place-items: center; width: 36px; height: 36px; border-radius: 50%;
-  background: var(--accent); color: #fff; transition: transform .25s var(--ease);
+  background: var(--accent); color: #fff; transition: transform .3s var(--out);
 }
 .chip svg { width: 16px; height: 16px; }
-.pill:hover .chip, a:hover > .pill .chip, .fam:hover .chip { transform: translateX(3px); }
+.pill:hover .chip, a:hover > .pill .chip, .fam:hover .chip,
+.pill:focus-visible .chip, a:focus-visible > .pill .chip, .fam:focus-visible .chip,
+.pill:active .chip, a:active > .pill .chip, .fam:active .chip { transform: translateX(4px); }
 .pill--grey { background: var(--panel); }
 .pill--accent { background: var(--accent); color: #fff; }
 .pill--accent .chip { background: #fff; color: var(--accent); }
@@ -115,8 +118,22 @@ button, input, select { font: inherit; letter-spacing: inherit; color: inherit; 
 .bar {
   position: fixed; z-index: 40; left: var(--inset); right: var(--inset);
   top: calc(12px + env(safe-area-inset-top, 0px)); height: 48px;
-  display: flex; border-radius: 5px; overflow: hidden;
+  display: flex; border-radius: 5px;
+  transform: translate3d(0, 4px, 0); transform-origin: 50% 0;
+  transition: transform .4s var(--out);
 }
+/* the cells round their own outer corners now that the bar no longer clips them */
+.bar > :first-child { border-radius: 5px 0 0 5px; }
+.bar > :last-child { border-radius: 0 5px 5px 0; }
+/* edge: a light hairline and a soft shadow on a pseudo-element behind the cells; no colour changes.
+   Faint at the top of the page, full strength once the page has moved (is-scrolled, set by site.js). */
+.bar::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; border-radius: 5px; pointer-events: none;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, .6), 0 2px 4px rgba(3, 14, 36, .35), 0 10px 24px rgba(3, 14, 36, .42);
+  opacity: .55; transition: opacity .35s var(--out);
+}
+.bar.is-scrolled { transform: scale(.985); }
+.bar.is-scrolled::after { opacity: 1; }
 .bar-logo {
   flex: 1 1 auto; min-width: 0; display: flex; align-items: center; padding: 0 14px;
   background: var(--cell-dk); text-decoration: none;
@@ -231,7 +248,10 @@ button, input, select { font: inherit; letter-spacing: inherit; color: inherit; 
 .hcard-nav { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); border-top: 1px solid rgba(255, 255, 255, .14); }
 .hcard-nav button {
   display: grid; place-items: center; min-height: 48px; border: 0; background: transparent; color: #fff; cursor: pointer;
+  transition: background-color .2s var(--out);
 }
+.hcard-nav svg { transition: transform .2s var(--out); }
+.hcard-nav button:active svg { transform: scale(.8); }
 .hcard-nav button + button { border-left: 1px solid rgba(255, 255, 255, .14); }
 .hcard-nav button:hover { background: rgba(255, 255, 255, .06); }
 .hcard-nav svg { width: 18px; height: 18px; }
@@ -244,13 +264,15 @@ button, input, select { font: inherit; letter-spacing: inherit; color: inherit; 
 .fam {
   display: grid; grid-template-columns: minmax(0, 1fr) 41%; grid-template-rows: auto auto 1fr; column-gap: 8px;
   min-height: 172px; padding: 15px 14px 14px 20px; border-radius: var(--r); background: var(--panel); color: var(--navy); text-decoration: none;
+  transition: transform .2s var(--out);
 }
+.fam:active { transform: scale(.985); }
 @media (max-width: 359.98px) { .fam { grid-template-columns: minmax(0, 1fr) 36%; padding-left: 16px; } }
 .fam-eyebrow { grid-column: 1; font-size: 14px; line-height: 21px; color: var(--muted); }
 .fam-title { grid-column: 1; font-size: 21px; line-height: 27px; font-weight: 500; letter-spacing: .25px; color: var(--navy); }
 .fam-img { grid-column: 2; grid-row: 1 / 4; align-self: center; height: 132px; }
-.fam-img img { width: 100%; height: 100%; object-fit: contain; object-position: right center; transition: transform .3s var(--ease); }
-.fam:hover .fam-img img { transform: translateY(-3px) scale(1.03); }
+.fam-img img { width: 100%; height: 100%; object-fit: contain; object-position: right center; transition: transform .35s var(--out); }
+.fam:hover .fam-img img, .fam:focus-visible .fam-img img, .fam:active .fam-img img { transform: translateY(-5px) scale(1.03); }
 .fam .pill { grid-column: 1; grid-row: 3; align-self: end; justify-self: start; min-height: 44px; padding: 4px 4px 4px 16px; font-size: 15px; gap: 10px; white-space: nowrap; }
 .fam .pill .chip { width: 34px; height: 34px; }
 
@@ -383,14 +405,15 @@ button, input, select { font: inherit; letter-spacing: inherit; color: inherit; 
   color: #414141; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 6px;
 }
 .rc-link:hover { color: var(--accent); }
-.rc-link svg { width: 12px; height: 12px; }
+.rc-link svg { width: 12px; height: 12px; transition: transform .25s var(--out); }
+.rc-link:hover svg, .rc-link:focus-visible svg, .rc-link:active svg { transform: translateX(3px); }
 .arrows { display: flex; gap: 10px; }
 .arrows button {
   width: 46px; height: 46px; border-radius: 50%; display: grid; place-items: center; cursor: pointer;
-  background: transparent; border: 1px solid #8f8d8d; color: var(--ink); transition: transform .2s var(--ease);
+  background: transparent; border: 1px solid #8f8d8d; color: var(--ink); transition: transform .2s var(--out), border-color .2s var(--out);
 }
 .arrows button:hover:not(:disabled) { border-color: var(--ink); }
-.arrows button:active:not(:disabled) { transform: scale(.94); }
+.arrows button:active:not(:disabled) { transform: scale(.92); }
 .arrows button:disabled { opacity: .4; cursor: default; }
 .arrows svg { width: 18px; height: 18px; }
 .range-foot { padding: 14px var(--pad) 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
@@ -525,10 +548,22 @@ html:not(.js) .ask-form .field { display: none; }
 .foot-group summary::-webkit-details-marker { display: none; }
 .foot-group summary::after {
   content: ""; width: 8px; height: 8px; margin-right: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor;
-  transform: rotate(45deg) translateY(-2px); transition: transform .2s var(--ease);
+  transform: rotate(45deg) translateY(-2px); transition: transform .3s var(--out);
 }
 .foot-group[open] summary::after { transform: rotate(-135deg) translateY(-2px); }
 .foot-links { padding-bottom: 8px; }
+/* phones: the open group's links fade and settle (opacity and a few px, no height change). Closing animates too where
+   ::details-content exists; elsewhere opening still animates through the keyframe. */
+@supports selector(::details-content) {
+  details.foot-group::details-content { opacity: 0; transform: translateY(-6px); transition: opacity .25s var(--out), transform .25s var(--out), content-visibility .25s allow-discrete; }
+  details.foot-group[open]::details-content { opacity: 1; transform: none; }
+}
+@supports not selector(::details-content) {
+  details.foot-group[open] .foot-links { animation: foot-open .28s var(--out); }
+}
+@keyframes foot-open { from { opacity: 0; transform: translateY(-6px); } to { opacity: 1; transform: none; } }
+.foot-group summary { transition: opacity .15s var(--out); }
+.foot-group summary:active { opacity: .7; }
 .foot-links a {
   display: flex; align-items: center; gap: 8px; min-height: 44px; text-decoration: none; color: var(--text); font-size: 15px; line-height: 20px;
 }
@@ -569,7 +604,9 @@ html:not(.js) .ask-form .field { display: none; }
 .filter {
   display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border-radius: 100px;
   background: #fff; color: var(--ink); text-decoration: none; font-size: 15px; box-shadow: inset 0 0 0 1px var(--rule); cursor: pointer;
+  transition: transform .2s var(--out), background-color .2s var(--out), box-shadow .2s var(--out);
 }
+.filter:active { transform: scale(.96); }
 .filter span { color: var(--muted); font-size: 14px; }
 .filter:hover { box-shadow: inset 0 0 0 1px #8f8d8d; }
 .filter[aria-pressed="true"] { background: var(--accent); color: #fff; box-shadow: none; }
@@ -629,7 +666,22 @@ html:not(.js) .ask-form .field { display: none; }
   .cert p { font-size: 15px; }
 }
 
+/* ---------- motion (site.js adds .mo to <html> only when it runs and motion is allowed) ---------- */
+/* panels rise a few px and fade in once as they enter; site.js tags only things below the first screen (.rv) */
+html.mo .rv { opacity: 0; transform: translate3d(0, 14px, 0); transition: opacity .42s var(--out), transform .42s var(--out); }
+html.mo .rv.in { opacity: 1; transform: none; }
+/* hero corner card: the slide that is in view settles in, the others rest back */
+html.mo .hslide > div:first-child, html.mo .hslide-thumb { transition: opacity .4s var(--out), transform .4s var(--out); }
+html.mo .hslide:not(.is-on) > div:first-child { opacity: .3; transform: translate3d(10px, 0, 0); }
+html.mo .hslide:not(.is-on) .hslide-thumb { opacity: .3; transform: scale(.94); }
+/* range carousel: the card nearest the middle of the row grows a touch */
+html.mo .rc-media img { transition: transform .4s var(--out); }
+html.mo .rc.is-near .rc-media img { transform: scale(1.05); }
+/* family words drift a few px with the page's scroll (value smoothed in site.js) */
+html.mo .words-list li { transform: translate3d(var(--wd, 0px), 0, 0); }
+
 @media (prefers-reduced-motion: reduce) {
+  .bar, .bar.is-scrolled { transform: none; }
   html { scroll-behavior: auto; }
-  *, *::before, *::after { animation: none !important; transition: none !important; }
+  *, *::before, *::after, details::details-content { animation: none !important; transition: none !important; }
 }

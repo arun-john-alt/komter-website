@@ -138,6 +138,7 @@ address { font-style: normal; }
   font-size: 12px;
 }
 .thumbs a:first-child { border-top: 0; }
+.thumbs a { -webkit-tap-highlight-color: transparent; }
 .thumbs a span {
   writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap;
   font-family: Archivo, "Archivo Rail Fallback", "Arial Narrow", sans-serif;
@@ -154,8 +155,17 @@ address { font-style: normal; }
   .thumbs a:not(.lit):hover { transform: translateX(-3px); }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .thumbs a { transition: transform .16s cubic-bezier(.2, .8, .2, 1); }
+  .thumbs a { transition: transform .16s cubic-bezier(.23, 1, .32, 1); }
+  /* press-in: the tab is pushed back toward the fore-edge for the 140 ms of a tap, then springs proud again */
+  .thumbs a:active { transform: translateX(2px); transition-duration: .14s; }
 }
+/* the red highlight is one block that slides between tabs (site.js moves it); the tabs go clear over it */
+.thumb-hi {
+  position: absolute; left: -6px; right: 0; top: 0; height: 100px; background: var(--red);
+  transform-origin: 0 0; will-change: transform; pointer-events: none;
+}
+.thumbs.slide a, .thumbs.slide a.lit { background: transparent; }
+.thumbs.slide a.lit::after { display: none; }
 
 /* ---------------- the WhatsApp tab (phones) ---------------- */
 .wa-bar {
@@ -172,8 +182,8 @@ address { font-style: normal; }
 /* stood down while the coupon's own buttons or the back cover are on screen */
 .wa-bar.away { transform: translateY(110%); visibility: hidden; }
 @media (prefers-reduced-motion: no-preference) {
-  .wa-bar { transition: transform .18s ease-out, visibility 0s linear 0s; }
-  .wa-bar.away { transition: transform .18s ease-out, visibility 0s linear .18s; }
+  .wa-bar { transition: transform .26s cubic-bezier(.23, 1, .32, 1), visibility 0s linear 0s; }
+  .wa-bar.away { transition: transform .22s cubic-bezier(.4, 0, 1, 1), visibility 0s linear .22s; }
 }
 @media (max-width: 359px) {
   .wa-bar { padding-left: 8px; padding-right: 8px; font-size: 16px; }
@@ -208,11 +218,39 @@ address { font-style: normal; }
   min-height: 3.9em;   /* holds the four Archivo lines while the narrower fallback shows, so nothing jumps */
 }
 .hero h1 em, h1 em { font-style: normal; color: var(--red); }
+/* headline words sit in clip masks; with motion allowed each rises into its mask like type being set */
+.w {
+  display: inline-block; vertical-align: top; overflow: clip;
+  padding: .08em .04em .14em; margin: -.08em -.04em -.14em;
+}
+.w > span { display: inline-block; }
+@keyframes set { from { transform: translateY(125%); } }
+@keyframes wipe { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes land { from { transform: translateY(14px); } }
+@keyframes step { from { transform: translateY(-4px); } }
+@media (prefers-reduced-motion: no-preference) {
+  .w > span { animation: set .38s cubic-bezier(.23, 1, .32, 1) backwards; animation-delay: calc(var(--i) * 36ms); }
+}
 .hero .lede { margin-top: 12px; font-size: 17px; line-height: 1.45; max-width: 36ch; }
 
 .band {
   margin: 18px calc(-1 * var(--gr)) 0 calc(-1 * var(--gl));
   padding: 16px var(--gr) 0 var(--gl);
+  overflow: clip;   /* machines rise from the ground line of the band, never below it */
+}
+@media (prefers-reduced-motion: no-preference) {
+  /* first screen: the whole sequence is done inside 600 ms. Screen wipes in, machines land small to large,
+     the ruler's rule wipes after it and the ticks step in along it. */
+  .band { animation: wipe .42s cubic-bezier(.23, 1, .32, 1) 40ms backwards; }
+  .lineup img { animation: land .26s cubic-bezier(.23, 1, .32, 1) backwards; }
+  .lineup img:nth-child(1) { animation-delay: 110ms; }
+  .lineup img:nth-child(2) { animation-delay: 145ms; }
+  .lineup img:nth-child(3) { animation-delay: 180ms; }
+  .lineup img:nth-child(4) { animation-delay: 215ms; }
+  .lineup img:nth-child(5) { animation-delay: 250ms; }
+  .lineup img:nth-child(6) { animation-delay: 285ms; }
+  .ruler { animation: wipe .36s cubic-bezier(.23, 1, .32, 1) 170ms backwards; }
+  .tk { animation: step .15s cubic-bezier(.23, 1, .32, 1) backwards; animation-delay: calc(240ms + var(--k, 0) * 16ms); }
 }
 /* the row is sized to its own box (the ruler's width): the 1 HP piston starts on the 1 HP tick and the largest
    machine ends on 150 HP. Heights are shares of that width, chosen so the four widths less three overlaps
@@ -288,7 +326,8 @@ address { font-style: normal; }
 }
 @media (prefers-reduced-motion: no-preference) {
   .rows svg { transition: transform .14s ease-out; }
-  .rows a:hover svg { transform: translateX(3px); }
+  .rows a:hover svg, .rows a:active svg { transform: translateX(3px); }
+  .rows a:active { background: var(--tint); }
 }
 .range-all { margin-top: 4px; width: 100%; justify-content: space-between; }
 
@@ -300,6 +339,18 @@ address { font-style: normal; }
   max-width: 18ch; text-wrap: balance;
 }
 .sec .lede { margin-top: 12px; font-size: 17px; line-height: 1.5; max-width: 60ch; }
+/* heavy rules draw in left to right as their section arrives: a paper-coloured strip over the rule slides off.
+   Only elements site.js marks .rv (and that were below the fold at load) carry the strip. */
+.rv { position: relative; --rw: 4px; }
+.fam.rv, .steps.rv { --rw: 3px; }
+.rv::before {
+  content: ""; position: absolute; left: 0; right: 0; top: calc(-1 * var(--rw)); height: var(--rw);
+  background: var(--paper); z-index: 2; pointer-events: none; transform-origin: 100% 0;
+}
+.rv.in::before { transform: scaleX(0); }
+@media (prefers-reduced-motion: no-preference) {
+  .rv.in::before { transition: transform .5s cubic-bezier(.23, 1, .32, 1); }
+}
 
 /* ruled spec tables */
 .spec { width: 100%; margin-top: 22px; border-collapse: collapse; }
@@ -410,6 +461,12 @@ address { font-style: normal; }
   content: ""; display: inline-block; width: 3px; height: 20px; margin-left: 3px;
   vertical-align: -3px; background: var(--red);
 }
+/* ink rule under the end of the typed line: site.js sizes and slides it as the message prints */
+.pl { position: relative; }
+.pl-rule {
+  position: absolute; left: 0; top: 0; width: 100%; height: 2px; background: var(--navy);
+  transform-origin: 0 0; transform: scaleX(0); pointer-events: none;
+}
 .order-lede-nojs { display: none; }
 .coupon-actions { display: grid; gap: 10px; margin-top: 18px; }
 .coupon-actions .btn { width: 100%; }
@@ -460,6 +517,10 @@ address { font-style: normal; }
   .ask:hover span { text-decoration: underline; }
 }
 .ask:active { transform: translateY(1px); }
+@media (prefers-reduced-motion: no-preference) {
+  .ask svg { transition: transform .14s ease-out; }
+  .ask:active svg { transform: translateX(3px); }
+}
 
 /* ---------------- back cover ---------------- */
 .back {

@@ -75,6 +75,23 @@
     var chips = [].slice.call(chipBar.querySelectorAll('a'));
     var secs = chips.map(function (a) { return doc.getElementById(a.hash.slice(1)); });
     var current = null;
+    // the lit chip slides: one navy block moved with transform (translate + scaleX), no layout properties
+    var lit = null;
+    if (!still.matches) {
+      lit = doc.createElement('span');
+      lit.className = 'chip-lit';
+      lit.setAttribute('aria-hidden', 'true');
+      chipBar.insertBefore(lit, chipBar.firstChild);
+      chipBar.classList.add('has-lit');
+    }
+    var slide = function (idx) {
+      if (!lit) return;
+      if (idx < 0) { lit.style.opacity = 0; return; }
+      var a = chips[idx];
+      lit.style.transform = 'translateX(' + a.offsetLeft + 'px) scaleX(' + (a.offsetWidth / 100) + ')';
+      lit.style.opacity = 1;
+      if (!lit.classList.contains('ready')) requestAnimationFrame(function () { requestAnimationFrame(function () { lit.classList.add('ready'); }); });
+    };
     var tapped = -1;       // a tapped chip stays lit until the page stops scrolling
     var release = null;
     var light = function (idx) {
@@ -83,6 +100,7 @@
       chips.forEach(function (a, i) {
         if (i === idx) a.setAttribute('aria-current', 'true'); else a.removeAttribute('aria-current');
       });
+      slide(idx);
       if (idx >= 0) {
         var li = chips[idx].parentNode;
         var target = li.offsetLeft - parseFloat(getComputedStyle(chipBar).paddingLeft);
@@ -139,5 +157,80 @@
     addEventListener('scroll', onScroll, { passive: true });
     addEventListener('resize', onScroll, { passive: true });
     check();
+  }
+
+  /* ---- Motion pass: all of it off for prefers-reduced-motion (checked once, as on the reference site) ---- */
+  var calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var head = doc.querySelector('.site-head');
+
+  /* Header gets its hairline and shadow after the first few px */
+  if (head) {
+    var stuck = false;
+    var edge = function () {
+      var on = (window.pageYOffset || doc.documentElement.scrollTop) > 8;
+      if (on !== stuck) { stuck = on; head.classList.toggle('is-stuck', on); }
+    };
+    addEventListener('scroll', edge, { passive: true });
+    edge();
+  }
+
+  if (!calm && 'IntersectionObserver' in window) {
+    var once = function (els, fn, margin) {
+      var io = new IntersectionObserver(function (list) {
+        list.forEach(function (e) { if (e.isIntersecting) { io.unobserve(e.target); fn(e.target); } });
+      }, { rootMargin: margin || '0px 0px -8% 0px', threshold: 0.12 });
+      els.forEach(function (el) { io.observe(el); });
+    };
+    var below = function (el) { return el.getBoundingClientRect().top > innerHeight * 0.92; };
+
+    // machines settle once as each section enters; ones already on screen at load stay put
+    var stages = [].slice.call(doc.querySelectorAll('.fam .stage, .band-media .stage, .line .stage')).filter(below);
+    stages.forEach(function (el) { el.classList.add('rise'); });
+    once(stages, function (el) { el.classList.add('is-set'); });
+
+    // desktop lineup, left to right (its images are hidden from first paint by CSS, so show it right away if in view)
+    var lineup = doc.querySelector('.lineup');
+    if (lineup) once([lineup], function (el) { el.classList.add('is-set'); }, '0px');
+
+    // company figures count up once; the final value is already in the HTML
+    var figs = [].slice.call(doc.querySelectorAll('.figs dd'));
+    var run = function (dd) {
+      var m = /^(\d+)(\D*)$/.exec(dd.textContent.trim());
+      if (!m) return;
+      var end = +m[1], t0 = null;
+      var step = function (t) {
+        if (t0 === null) t0 = t;
+        var k = Math.min(1, (t - t0) / 1100);
+        dd.textContent = Math.round(end * (1 - Math.pow(1 - k, 3))) + m[2];
+        if (k < 1) requestAnimationFrame(step);
+      };
+      dd.textContent = '0' + m[2];
+      requestAnimationFrame(step);
+    };
+    once(figs, run, '0px');
+  }
+
+  /* Team photo: a smoothed scroll-linked lift (about 8 px and 1.2 degrees at most) */
+  var team = doc.querySelector('.team img');
+  if (team && !calm) {
+    var cur = 0, goal = 0, last = 0, spinning = false;
+    var aim = function () {
+      var r = team.getBoundingClientRect();
+      var p = (innerHeight - r.top) / (innerHeight + r.height);
+      goal = Math.max(-1, Math.min(1, p * 2 - 1));
+    };
+    var frame = function (now) {
+      var dt = Math.min(64, now - last); last = now;
+      cur += (goal - cur) * (1 - Math.exp(-dt / 150));
+      team.style.transform = 'perspective(900px) translateY(' + (-cur * 8).toFixed(2) + 'px) rotateX(' + (cur * 1.2).toFixed(3) + 'deg)';
+      if (Math.abs(goal - cur) > 0.002) requestAnimationFrame(frame); else spinning = false;
+    };
+    var wake = function () {
+      aim();
+      if (!spinning) { spinning = true; last = performance.now(); requestAnimationFrame(frame); }
+    };
+    addEventListener('scroll', wake, { passive: true });
+    addEventListener('resize', wake, { passive: true });
+    aim(); cur = goal;
   }
 })();

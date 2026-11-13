@@ -13,7 +13,41 @@
   var holdUntil = 0;
   var chosen = null;   // the tab last tapped: kept lit while its family is still on the reading line
 
+  // the red highlight: one block that glides to the lit tab (exponential smoothing in rAF, like the portfolio
+  // pages). Reduced motion, or a missing rail, keeps the plain red tab and never creates it.
+  var rail = document.querySelector('.thumbs');
+  var hi = null, hy = 0, hh = 0, ty = 0, th = 0, hiRaf = 0, hiT = 0;
+  if (rail && tabs.length && !reduce.matches) {
+    hi = document.createElement('span');
+    hi.className = 'thumb-hi';
+    hi.setAttribute('aria-hidden', 'true');
+    hi.style.transform = 'translate3d(0,0,0) scaleY(0)';
+    rail.insertBefore(hi, rail.firstChild);
+    rail.classList.add('slide');
+  }
+  function hiDraw() { hi.style.transform = 'translate3d(0,' + hy.toFixed(2) + 'px,0) scaleY(' + (hh / 100).toFixed(4) + ')'; }
+  function hiStep(now) {
+    var dt = Math.min(64, now - hiT); hiT = now;
+    var k = 1 - Math.exp(-dt / 55);
+    hy += (ty - hy) * k; hh += (th - hh) * k;
+    if (Math.abs(ty - hy) < 0.25 && Math.abs(th - hh) < 0.25) { hy = ty; hh = th; hiRaf = 0; } else hiRaf = requestAnimationFrame(hiStep);
+    hiDraw();
+  }
+  function hiTo(tab, snap) {
+    if (!hi) return;
+    if (tab) { ty = tab.offsetTop; th = tab.offsetHeight; } else { th = 0; }
+    if (snap || (hh === 0 && !tab)) { hy = ty; hh = th; cancelAnimationFrame(hiRaf); hiRaf = 0; hiDraw(); return; }
+    if (hh === 0) { hy = ty; }   // coming from nothing: grow in place rather than fly in from the old spot
+    if (!hiRaf) { hiT = performance.now(); hiRaf = requestAnimationFrame(hiStep); }
+  }
+  var hiFirst = true;
+  window.addEventListener('resize', function () {
+    var on = tabs.filter(function (t) { return t.classList.contains('lit'); })[0];
+    hiTo(on || null, true);
+  });
+
   function light(tab) {
+    hiTo(tab, hiFirst); hiFirst = false;
     tabs.forEach(function (t) {
       var on = t === tab;
       t.classList.toggle('lit', on);
@@ -102,6 +136,28 @@
     spots.forEach(function (el) { watch.observe(el); });
   }
 
+  /* ---------- heavy rules draw in as their section arrives ---------- */
+  // Only rules that start below the fold are marked, so nothing on the first screen waits on this. If the observer
+  // never answers, a 2.5 s check shows every rule that is on screen anyway.
+  if ('IntersectionObserver' in window && !reduce.matches) {
+    var rules = [].slice.call(document.querySelectorAll('.sec-hd, .fam, .fam-band, .steps')).filter(function (el) {
+      return el.getBoundingClientRect().top > window.innerHeight * 0.92;
+    });
+    if (rules.length) {
+      var rio = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); }
+        });
+      }, { rootMargin: '0px 0px -12% 0px' });
+      rules.forEach(function (el) { el.classList.add('rv'); rio.observe(el); });
+      setTimeout(function () {
+        rules.forEach(function (el) {
+          if (!el.classList.contains('in') && el.getBoundingClientRect().top < window.innerHeight) el.classList.add('in');
+        });
+      }, 2500);
+    }
+  }
+
   /* ---------- the order coupon: the message sets itself as a line of type ---------- */
   var form = document.getElementById('coupon');
   if (!form) return;
@@ -118,6 +174,51 @@
   };
   var WA = 'https://wa.me/919840867322?text=';
   var typing = 0;
+
+  // ruled underline: an ink rule under the last printed line, as long as the text on it (plus the caret). It lengthens
+  // while the line is being set and glides to the next line when the message wraps.
+  var rule = null, rx = 0, ry = 0, tx = 0, tyy = 0, rRaf = 0, rT = 0, rKeep = 0;
+  if (msg) {
+    rule = document.createElement('span');
+    rule.className = 'pl-rule';
+    rule.setAttribute('aria-hidden', 'true');
+    msg.appendChild(rule);
+  }
+  function ruleTarget() {
+    var rg = document.createRange();
+    rg.setStartBefore(msg.firstChild); rg.setEndAfter(out.from);   // the printed words, not the rule itself
+    var rs = rg.getClientRects(), box = msg.getBoundingClientRect(), last = null, i;
+    for (i = 0; i < rs.length; i++) {
+      if (rs[i].width > 0 && (!last || rs[i].bottom > last.bottom - 2)) last = rs[i];
+    }
+    if (!last) return;
+    tyy = Math.floor((last.top - box.top + 14) / 28) * 28 + 26;
+    tx = Math.min(box.width, last.right - box.left + 6);
+  }
+  function ruleDraw() {
+    rule.style.transform = 'translate3d(0,' + ry.toFixed(1) + 'px,0) scaleX(' + (rx / Math.max(1, msg.clientWidth)).toFixed(4) + ')';
+  }
+  function ruleStep(now) {
+    var dt = Math.min(64, now - rT); rT = now;
+    ruleTarget();
+    var k = 1 - Math.exp(-dt / 60);
+    rx += (tx - rx) * k; ry += (tyy - ry) * k;
+    var done = Math.abs(tx - rx) < 0.4 && Math.abs(tyy - ry) < 0.4;
+    if (done) { rx = tx; ry = tyy; }
+    ruleDraw();
+    // keep reading while the line is still being set (typeset runs for up to a few frames after each change)
+    if (!done || now < rKeep) rRaf = requestAnimationFrame(ruleStep); else rRaf = 0;
+  }
+  function ruleKick(snap) {
+    if (!rule) return;
+    if (snap || reduce.matches) {
+      cancelAnimationFrame(rRaf); rRaf = 0;
+      ruleTarget(); rx = tx; ry = tyy; ruleDraw();
+      return;
+    }
+    rKeep = performance.now() + 700;
+    if (!rRaf) { rT = performance.now(); rRaf = requestAnimationFrame(ruleStep); }
+  }
 
   function tidy(v) {
     return v.replace(/\s+/g, ' ').trim().replace(/[\s.,;:]+$/, '');
@@ -154,6 +255,7 @@
     out.req.textContent = r ? ' Requirement: ' + r + '.' : '';
     out.from.textContent = f ? ' From: ' + f + '.' : '';
     var text = message();
+    ruleKick(!e || e.type === 'pageshow');
     send.href = WA + encodeURIComponent(text);
     mail.href = 'mailto:info@komter.in?subject=' + encodeURIComponent('Quote request') + '&body=' + encodeURIComponent(text);
   }
@@ -175,5 +277,7 @@
   });
   // a browser may restore typed values on back navigation: print what is there
   window.addEventListener('pageshow', function () { update(); });
+  window.addEventListener('resize', function () { ruleKick(true); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { ruleKick(true); });
   update();
 })();

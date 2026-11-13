@@ -596,3 +596,55 @@ html:not(.js) .builder .field, html:not(.js) .builder .row, html:not(.js) .build
   .js:not(.no-reveal) .reveal { opacity: 0; transform: translateY(14px); transition: opacity .4s var(--ease), transform .4s var(--ease); }
   .js:not(.no-reveal) .reveal.is-in { opacity: 1; transform: none; }
 }
+
+/* ---- Motion pass (13 Nov 2026): quiet and premium. transform/opacity only, strong ease-out, under ~500 ms.
+   Everything is gated on no-preference and on .js (removed by the 2.5 s failsafe), so content is always reachable. ---- */
+:root { --out: cubic-bezier(.23, 1, .32, 1); }
+
+/* Press states on touch: a short, small squeeze (buttons already have it) */
+.chips a, .menu summary, .lineup a, .fam-top { -webkit-tap-highlight-color: transparent; }
+.lines a:active, .menu-panel a:active, .direct a:active { background: var(--plinth); }
+@media (prefers-reduced-motion: no-preference) {
+  .chips a, .menu summary, .lineup a, .fam-top { transition: transform .12s var(--out), background-color .18s var(--ease), color .18s var(--ease), border-color .18s var(--ease); }
+  .chips a:active, .menu summary:active, .lineup a:active { transform: scale(.97); }
+  .fam-top:active { transform: scale(.985); }
+
+  /* Header: hairline and a light shadow only once the page has moved */
+  .js .site-head { border-bottom-color: transparent; transition: border-color .2s var(--out); }
+  .js .site-head::after {
+    content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+    box-shadow: 0 2px 14px rgba(16, 27, 44, .09); opacity: 0; transition: opacity .2s var(--out);
+  }
+  .js .site-head.is-stuck { border-bottom-color: var(--rule); }
+  .js .site-head.is-stuck::after { opacity: 1; }
+
+  /* Headline: each word rises out of a mask (split by a tiny script right after the h1) */
+  h1.split .w { display: inline-block; overflow: clip; vertical-align: top; padding: 0 .04em .14em 0; margin: 0 -.04em -.14em 0; }
+  h1.split .w > span { display: inline-block; animation: word-up .42s var(--out) both; animation-delay: calc(var(--i) * 50ms); }
+  @keyframes word-up { from { transform: translateY(105%); } to { transform: none; } }
+
+  /* Machines settle onto their plinths, once */
+  .js:not(.no-reveal) .rise:not(.is-set) img { opacity: 0; transform: translateY(10px); }
+  .rise img { transition: opacity .5s var(--out), transform .5s var(--out); }
+  .rise img + img { transition-delay: .08s; }
+  .rise img + img + img { transition-delay: .16s; }
+
+  /* Desktop lineup: left to right on the floor line (hidden from first paint by .js, shown by the script or the failsafe) */
+  .js:not(.no-reveal) .lineup:not(.is-set) .lu-img img { opacity: 0; transform: translateY(10px); }
+  .lineup .lu-img img { transition: opacity .5s var(--out), transform .5s var(--out); transition-delay: calc(var(--k, 0) * 70ms); }
+  .lineup li:nth-child(1) { --k: 0; } .lineup li:nth-child(2) { --k: 1; } .lineup li:nth-child(3) { --k: 2; }
+  .lineup li:nth-child(4) { --k: 3; } .lineup li:nth-child(5) { --k: 4; }
+
+  /* Team photo: smoothed scroll-linked lift (script writes the transform) */
+  .team img { will-change: transform; transform-origin: 50% 100%; }
+
+  /* Chip bar: the lit chip is a navy block that slides to the current chip */
+  .chips ul { position: relative; }
+  .chips .chip-lit {
+    position: absolute; left: 0; top: 8px; width: 100px; height: 44px; background: var(--navy); border-radius: 4px;
+    transform-origin: 0 0; opacity: 0; pointer-events: none; z-index: 0;
+  }
+  .chips .chip-lit.ready { transition: transform .32s var(--out), opacity .2s var(--out); }
+  .chips ul.has-lit a { position: relative; z-index: 1; }
+  .chips ul.has-lit a[aria-current="true"] { background: transparent; }
+}
