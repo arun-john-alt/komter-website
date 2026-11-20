@@ -1,0 +1,78 @@
+/* KOMTER v5: range page. Builds on style.css (scenes, pills, tags, turntables, airflow, reveals). */
+html{scroll-padding-top:calc(var(--hdr) + 72px)}
+.sc,.cc{scroll-margin-top:calc(var(--hdr) + 72px)}
+
+/* ---------- hero: short, so the family bar shows on the first screen; one machine turning ---------- */
+.hero-p{height:max(500px,calc(100svh - var(--hdr) - 84px))}
+.hero-p .show{grid-template-rows:minmax(0,1fr)}
+@media (min-width:1024px){.hero-p{height:clamp(440px,calc(100svh - var(--hdr) - 44px - 200px),600px)}}
+
+/* ---------- family jump bar: sticky, one swipe row, 44px chips, the lit chip follows the scroll ---------- */
+.jump{position:sticky;top:var(--hdr);z-index:40;margin-top:8px;padding:8px 0;
+  background:rgba(242,244,247,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.jump-row{display:flex;gap:8px;overflow-x:auto;padding:0 var(--gut);scrollbar-width:none;overscroll-behavior-x:contain;scroll-snap-type:x proximity;-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}
+.jump-row::-webkit-scrollbar{display:none}
+.jump-row li{flex:none;scroll-snap-align:start;scroll-margin-left:var(--gut)}
+.chip{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);
+  font:500 .95rem/1 var(--disp);letter-spacing:.1em;text-transform:uppercase;text-decoration:none;white-space:nowrap;
+  transition:background-color .25s,color .25s,border-color .25s}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-current="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+@media (min-width:1024px){.jump{margin-top:12px;margin-left:12px;margin-right:12px;border-radius:999px;border:1px solid var(--line)}.jump-row{padding:0 10px}.chip{padding:0 18px}}
+
+/* ---------- the three flagship lines as navy scenes: machine whole, copy and actions inside one screen ---------- */
+.lines{display:grid;gap:8px;padding:8px 8px 0}
+@media (min-width:1024px){.lines{gap:12px;padding:12px 12px 0}}
+.sc{display:grid;grid-template-areas:"stage" "copy";padding:20px 20px 28px}
+.sc-stage{grid-area:stage;position:relative;height:clamp(210px,62vw,380px);container-type:size;display:grid;place-items:center}
+.sc-par{display:grid;place-items:center;width:100%;height:100%}
+/* whole: by width, by height (room for the turn and the floor ring), never past 1.5x the source pixels */
+.tt-sc{width:min(90cqw,calc(74cqh * var(--ar)),calc(var(--nw,4000) * 1.5px / var(--dpr)));perspective:1300px}
+.sc-copy{grid-area:copy;display:grid;gap:16px;align-content:center;padding-top:20px}
+.sc-h{font:500 clamp(1.85rem,7.4vw,3rem)/1 var(--disp);letter-spacing:.012em;text-transform:uppercase;text-wrap:balance;color:#fff}
+.sc-h .tag{margin-top:12px;margin-left:0;display:inline-block;font-size:1rem;line-height:1.7;vertical-align:baseline}
+.sc-h .ln{margin-bottom:0}
+.sc-specs li{position:relative;padding:10px 0 10px 22px;border-top:1px solid rgba(255,255,255,.14);color:#D3E2F2;font-size:1rem;line-height:1.5;font-variant-numeric:tabular-nums;max-width:none}
+.sc-specs li:first-child{border-top:0}
+.sc-specs li::before,.cc-specs li::before{content:"";position:absolute;left:2px;top:1.05em;width:7px;height:7px;background:var(--blue);transform:rotate(45deg)}
+.sc-specs li.ask{color:#fff}
+.sc-act,.cc-act{display:flex;flex-wrap:wrap;gap:10px;align-items:center;max-width:none}
+.js .sc-stage.rv:not(.in){transform:translateY(40px) scale(.96)}
+.js.rv-fail .sc-stage.rv{transform:none}
+@media (min-width:768px){.sc{padding:30px 40px 36px}}
+@media (min-width:1024px){
+  .sc{grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-areas:"copy stage";align-items:center;column-gap:28px;padding:40px 40px 40px 56px}
+  .sc:nth-child(even){grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-areas:"stage copy";padding:40px 56px 40px 40px}
+  .sc-stage{height:clamp(300px,calc(100svh - var(--hdr) - 200px),540px)}
+  .sc-copy{padding-top:0;gap:18px}
+  .sc-h{font-size:clamp(2rem,3vw,3rem)}
+}
+
+/* ---------- compact cards: the 11 lines after the three flagships ---------- */
+.cc-grid{display:grid;gap:8px;padding:8px 8px 0}
+.cc{--cb:rgba(255,255,255,.86);--cf:var(--ink);--cs:var(--ink2);--ca:var(--blue-d);--cl:var(--line);display:grid;gap:10px;padding:20px 18px 22px;border-radius:var(--r);background:var(--cb);color:var(--cf);border:1px solid var(--cl)}
+.cc-d{--cb:linear-gradient(160deg,#0A2A5C,#071B3D);--cf:#fff;--cs:#D3E2F2;--ca:#8FD0F3;--cl:transparent}
+.cc-top{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:14px;align-items:center}
+.cc-img{height:150px;container-type:size;display:grid;place-items:center}
+.cc-img .tt{width:min(94cqw,calc(76cqh * var(--ar)),calc(var(--nw,4000) * 1.5px / var(--dpr)));perspective:900px}
+.cc-h{font:500 1.3rem/1.05 var(--disp);letter-spacing:.04em;text-transform:uppercase}
+.cc-rng{margin-top:8px;font:500 .95rem/1.25 var(--disp);letter-spacing:.1em;text-transform:uppercase;color:var(--ca)}
+.cc-specs li{position:relative;padding:5px 0 5px 20px;color:var(--cs);font-size:1rem;line-height:1.45;max-width:none}
+.cc-specs li::before{top:.95em}
+.cc-act{margin-top:4px}
+@media (min-width:1024px){
+  .cc-grid{grid-template-columns:1fr 1fr;gap:12px;padding:12px 12px 0}
+  .cc{padding:28px 30px 30px;gap:14px}
+  .cc:nth-child(4n+1),.cc:nth-child(4n+4){--cb:linear-gradient(160deg,#0A2A5C,#071B3D);--cf:#fff;--cs:#D3E2F2;--ca:#8FD0F3;--cl:transparent}
+  .cc:nth-child(4n+2),.cc:nth-child(4n+3){--cb:rgba(255,255,255,.86);--cf:var(--ink);--cs:var(--ink2);--ca:var(--blue-d);--cl:var(--line)}
+  .cc:nth-child(even) .cc-img{order:2}
+  .cc-top{grid-template-columns:1fr 1fr;gap:22px}
+  .cc-img{height:220px}
+  .cc-h{font-size:1.7rem}
+}
+.cc.cc-call,.cc-grid .cc.cc-call:nth-child(n){--cb:#1570B8;--cf:#fff;--cs:#fff;--cl:transparent;align-content:center}
+.cc-call p{color:#fff;max-width:none}
+.cc-call .pill-fill{background:#fff;color:var(--navy)}
+.cc-call .pill-fill:hover{background:#DCEBF8}
+.cc-call .cc-h{font-size:clamp(1.8rem,7vw,2.6rem)}
+@media (prefers-reduced-motion:reduce){.js .sc-stage.rv:not(.in){transform:none!important;opacity:1!important}}
