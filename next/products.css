@@ -1,0 +1,125 @@
+/* KOMTER v2: range page. Builds on style.css (scenes, pills, tags, hero, reveals). */
+html{scroll-padding-top:calc(var(--hdr) + 72px)}
+.sc,.cc{scroll-margin-top:calc(var(--hdr) + 72px)}
+.hero-p .hero-rings{top:68%}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+
+/* ---------- hero, a little shorter than home so the family bar shows on the first screen ---------- */
+.hero-p{min-height:min(620px,calc(100svh - var(--hdr) - 76px))}
+@media (min-width:1024px){.hero-p{height:clamp(520px,calc(100svh - var(--hdr) - 36px - 150px),640px)}}
+
+/* ---------- family jump bar: sticky, one swipe row, 44px chips, the lit chip follows the scroll ---------- */
+.jump{position:sticky;top:var(--hdr);z-index:40;margin-top:8px;padding:8px 0;
+  background:rgba(242,244,247,.94);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.jump-row{display:flex;gap:8px;overflow-x:auto;padding:0 var(--gut);scrollbar-width:none;overscroll-behavior-x:contain;scroll-snap-type:x proximity;-webkit-mask-image:linear-gradient(90deg,#000 90%,transparent);mask-image:linear-gradient(90deg,#000 90%,transparent)}
+.jump-row::-webkit-scrollbar{display:none}
+.jump-row li{flex:none;scroll-snap-align:start;scroll-margin-left:var(--gut)}
+.chip{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line);background:#fff;color:var(--ink);
+  font:500 .95rem/1 var(--disp);letter-spacing:.1em;text-transform:uppercase;text-decoration:none;white-space:nowrap;
+  transition:background-color .25s,color .25s,border-color .25s}
+.chip:hover{border-color:var(--ink)}
+.chip[aria-current="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+@media (min-width:1024px){.jump{margin-top:12px;margin-left:12px;margin-right:12px;border-radius:999px;border:1px solid var(--line)}.jump-row{padding:0 10px}.chip{padding:0 18px}}
+
+/* ---------- each line as a scene ---------- */
+.lines{display:grid;gap:8px;padding:8px 8px 0}
+@media (min-width:1024px){.lines{gap:12px;padding:12px 12px 0}}
+.sc{display:grid;grid-template-areas:"stage" "copy";gap:6px;padding:22px 20px 30px}
+.sc-num{position:absolute;z-index:0;right:14px;top:6px;font:300 clamp(6.5rem,36vw,15rem)/.8 var(--disp);font-variant-numeric:tabular-nums;letter-spacing:.02em;
+  color:rgba(143,193,235,.06);pointer-events:none;user-select:none}
+.sc-stage{grid-area:stage;position:relative;z-index:1;display:grid;place-items:center;min-height:min(62vw,300px);padding:18px 0 6px}
+.sc-glow{position:absolute;inset:0;display:grid;place-items:center;pointer-events:none}
+.sc-glow::before{content:"";width:min(88%,560px);aspect-ratio:1;border-radius:50%;border:1.5px dashed rgba(46,168,228,.38);
+  background:radial-gradient(closest-side,rgba(46,168,228,.22),rgba(46,168,228,0))}
+.sc-stage::after{content:"";position:absolute;left:12%;right:12%;bottom:2px;height:7%;border-radius:50%;background:radial-gradient(closest-side,rgba(1,8,22,.55),rgba(1,8,22,0));pointer-events:none}
+.sc-mach{position:relative;z-index:1;width:100%;max-width:var(--mw,none);margin-inline:auto;display:grid;place-items:center}
+.sc-par,.sc-drift{width:100%}
+.sc-mach img{width:100%;height:auto;max-height:min(60svh,520px);object-fit:contain}
+.sc.live .sc-drift{animation:drift 9s ease-in-out infinite alternate}
+.sc:nth-child(even).live .sc-drift{animation-delay:-4s}
+
+.sc-copy{grid-area:copy;position:relative;z-index:1;display:grid;gap:18px;align-content:center;padding-top:14px}
+.sc-h{font:500 clamp(1.85rem,7.4vw,3.3rem)/1 var(--disp);letter-spacing:.012em;text-transform:uppercase;text-wrap:balance;color:#fff}
+.sc-h .tag{margin-top:14px;margin-left:0;display:inline-block;font-size:1rem;line-height:1.7;vertical-align:baseline}
+.sc-h .ln{margin-bottom:0}
+.sc-box{padding:4px 18px 6px;border-radius:20px;background:linear-gradient(100deg,rgba(255,255,255,.13),rgba(255,255,255,.05));border:1px solid rgba(255,255,255,.14)}
+.sc-specs li{position:relative;padding:12px 0 12px 22px;border-top:1px solid rgba(255,255,255,.13);color:#D3E2F2;font-size:1rem;line-height:1.5;font-variant-numeric:tabular-nums;max-width:none}
+.sc-specs li:first-child{border-top:0}
+.sc-specs li::before{content:"";position:absolute;left:2px;top:1.12em;width:7px;height:7px;background:var(--blue);transform:rotate(45deg)}
+.sc-specs li.ask{color:#fff}
+.sc-ask li{padding-top:14px;padding-bottom:14px}
+.sc-fig{width:100%;margin:2px 0 10px;border-collapse:collapse;font-variant-numeric:tabular-nums;text-align:left}
+.sc-fig caption{text-align:left;padding:12px 0 6px;font:500 .95rem/1.2 var(--disp);letter-spacing:.16em;text-transform:uppercase;color:#BDD3EA}
+.sc-fig th,.sc-fig td{padding:9px 6px 9px 0;border-top:1px solid rgba(255,255,255,.13);font:500 1.1rem/1.15 var(--disp);letter-spacing:.04em;vertical-align:baseline}
+.sc-fig thead th{font-size:.88rem;letter-spacing:.14em;text-transform:uppercase;color:#BDD3EA;border-top:0;padding-top:4px}
+.sc-fig tbody th{text-transform:uppercase;white-space:nowrap}
+.sc-fig td{color:#fff}
+.sc-act{display:flex;flex-wrap:wrap;gap:10px;max-width:none}
+@media (max-width:359px){.sc{padding-left:14px;padding-right:14px}.sc-fig th,.sc-fig td{font-size:1rem;letter-spacing:.02em}.sc-act .pill{padding:0 18px}}
+
+/* stage arrives bigger than the plain reveal: rises and settles; one-way, visible when scripts fail */
+.js .sc-stage.rv:not(.in){transform:translateY(56px) scale(.95)}
+.js.rv-fail .sc-stage.rv{transform:none}
+
+@media (min-width:768px){
+  .sc{padding:30px 40px 40px}
+  .sc-stage{min-height:360px}
+}
+@media (min-width:1024px){
+  .sc{grid-template-columns:minmax(0,5fr) minmax(0,7fr);grid-template-areas:"copy stage";min-height:clamp(560px,86svh,780px);align-items:center;column-gap:20px;padding:56px 0 56px 56px}
+  .sc:nth-child(even){grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-areas:"stage copy";padding:56px 56px 56px 0}
+  .sc-num{right:36px;top:18px;font-size:clamp(9rem,17vw,16rem)}
+  .sc:nth-child(even) .sc-num{right:auto;left:36px}
+  .sc-stage{min-height:420px;padding:0}
+  .sc-copy{padding-top:0;gap:22px}
+  .sc-h{font-size:clamp(2.2rem,3.6vw,3.4rem)}
+  .sc-mach img{max-height:min(66svh,560px)}
+}
+@media (prefers-reduced-motion:reduce){
+  .sc.live .sc-drift{animation:none}
+  .js .sc-stage.rv:not(.in){transform:none!important;opacity:1!important}
+}
+
+/* ---------- compact cards: the 11 lines after the three flagships ---------- */
+.cc-grid{display:grid;gap:8px;padding:8px 8px 0}
+.cc{--cb:#fff;--cf:var(--ink);--cs:var(--ink2);--ca:var(--blue-d);--cl:var(--line);display:grid;gap:10px;padding:20px 18px 22px;border-radius:var(--r);background:var(--cb);color:var(--cf);border:1px solid var(--cl)}
+.cc-d{--cb:linear-gradient(160deg,#0A2A5C,#071B3D);--cf:#fff;--cs:#D3E2F2;--ca:#8FD0F3;--cl:transparent}
+.cc-top{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:14px;align-items:center}
+.cc-img img{width:100%;height:auto;max-height:170px;object-fit:contain}
+.cc-h{font:500 1.3rem/1.05 var(--disp);letter-spacing:.04em;text-transform:uppercase}
+.cc-rng{margin-top:8px;font:500 .95rem/1.25 var(--disp);letter-spacing:.1em;text-transform:uppercase;color:var(--ca)}
+.cc-specs li{position:relative;padding:5px 0 5px 20px;color:var(--cs);font-size:1rem;line-height:1.45;max-width:none}
+.cc-specs li::before{content:"";position:absolute;left:2px;top:.95em;width:7px;height:7px;background:var(--blue);transform:rotate(45deg)}
+.cc-act{display:flex;gap:10px;align-items:center;margin-top:4px}
+.icon-btn{width:44px;height:44px;border-radius:50%;border:1.5px solid currentColor;display:grid;place-items:center;text-decoration:none;color:inherit;transition:background-color .25s,color .25s}
+.icon-btn:hover{background:var(--blue);color:var(--navy);border-color:var(--blue)}
+@media (min-width:1024px){
+  .cc-grid{grid-template-columns:1fr 1fr;gap:12px;padding:12px 12px 0}
+  .cc{padding:28px 30px 30px;gap:14px}
+  .cc:nth-child(4n+1),.cc:nth-child(4n+4){--cb:linear-gradient(160deg,#0A2A5C,#071B3D);--cf:#fff;--cs:#D3E2F2;--ca:#8FD0F3;--cl:transparent}
+  .cc:nth-child(4n+2),.cc:nth-child(4n+3){--cb:#fff;--cf:var(--ink);--cs:var(--ink2);--ca:var(--blue-d);--cl:var(--line)}
+  .cc:nth-child(even) .cc-img{order:2}
+  .cc-top{grid-template-columns:1fr 1fr;gap:22px}
+  .cc-img img{max-height:230px}
+  .cc-h{font-size:1.7rem}
+}
+
+.cc.cc-call,.cc-grid .cc.cc-call:nth-child(n){--cb:#1570B8;--cf:#fff;--cs:#fff;--cl:transparent;align-content:center}
+.cc-call p{color:#fff;max-width:none}
+.cc-call .pill-fill{background:#fff;color:var(--navy)}
+.cc-call .pill-fill:hover{background:#DCEBF8}
+.cc-call .cc-h{font-size:clamp(1.8rem,7vw,2.6rem)}
+@media (min-width:1024px){
+  .sc-small{grid-template-columns:1fr;grid-template-areas:"stage" "copy";min-height:0;padding:48px 56px 56px;row-gap:12px}
+  .sc-small .sc-stage{min-height:300px}
+  .sc-small .sc-copy{grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:56px;align-items:start}
+  .sc-small .sc-h{grid-column:1;grid-row:1}
+  .sc-small .sc-act{grid-column:1;grid-row:2;align-self:start}
+  .sc-small .sc-box{grid-column:2;grid-row:1/span 2}
+}
+
+/* two-column scene copy (heading beside the spec box): size the heading to its own column so the line mask never clips
+   the longest word (COMPRESSORS is about 6.3em wide) */
+@media (min-width:1024px){
+  .sc-small .sc-h{font-size:clamp(1.6rem,2.3vw,2.6rem)}
+}
