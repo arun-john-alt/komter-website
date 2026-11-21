@@ -134,8 +134,6 @@ html.menu-open .hdr::after{opacity:1;background:var(--line-d)}
 .hero{position:relative;margin:0 8px;height:max(560px,calc(100svh - var(--hdr) - 8px));display:flex;flex-direction:column;overflow:hidden;color:#fff;isolation:isolate;
   border-radius:var(--r) var(--r) var(--r) clamp(56px,18vw,190px);
   background:radial-gradient(80% 55% at 60% 70%,#0F4C9A 0%,rgba(15,76,154,0) 70%),linear-gradient(165deg,var(--navy2) 0%,var(--navy) 70%)}
-.hero::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;
-  background:linear-gradient(rgba(255,255,255,.06) 1px,transparent 1px) 0 0/48px 48px,linear-gradient(90deg,rgba(255,255,255,.06) 1px,transparent 1px) 0 0/48px 48px}
 .hero-in{position:relative;z-index:2;flex:none;padding:22px 20px 0}
 .h1 .ln>span{transform:translateY(105%);animation:lineUp .6s var(--ease) both;animation-delay:calc(var(--i,0)*50ms + 20ms)}
 @keyframes lineUp{to{transform:none}}
@@ -440,7 +438,7 @@ main,.util,.foot{position:relative;z-index:1}
   transform:translateX(-110%);animation:sheen var(--tt-d,7s) cubic-bezier(.45,0,.55,1) var(--tt-o,-3.5s) infinite alternate paused}
 .tt-floor{position:absolute;left:8%;right:8%;bottom:-5%;height:10%;border-radius:50%;background:radial-gradient(closest-side,rgba(1,8,22,.62),rgba(1,8,22,0));
   animation:ttFloor var(--tt-d,7s) cubic-bezier(.45,0,.55,1) var(--tt-o,-3.5s) infinite alternate paused}
-.tt-ring{position:absolute;left:-3%;right:-3%;bottom:-9%;height:16%;border-radius:50%;border:1px solid rgba(46,168,228,.42);box-shadow:inset 0 0 28px rgba(46,168,228,.16)}
+.tt-ring{position:absolute;left:-3%;right:-3%;bottom:-9%;height:16%;border-radius:50%;border:1px solid rgba(46,168,228,.42)}
 .tt.live .spin,.tt.live .sheen i,.tt.live .tt-floor{animation-play-state:running}
 .tt.held .spin,.tt.held .sheen i,.tt.held .tt-floor{animation:none}
 @keyframes swing{from{transform:rotateY(-22deg)}to{transform:rotateY(22deg)}}
@@ -501,8 +499,8 @@ main,.util,.foot{position:relative;z-index:1}
 .pm-par{place-items:end center;padding-bottom:13cqh}
 .tt-hero .tt-ring{display:none}
 .stage-ring{position:absolute;left:50%;bottom:7.5cqh;width:min(78cqw,620px);height:11cqh;transform:translateX(-50%);border-radius:50%;
-  border:1px solid rgba(46,168,228,.45);box-shadow:inset 0 0 28px rgba(46,168,228,.16);pointer-events:none}
-.stage-ring::after{content:"";position:absolute;inset:-1px;border-radius:50%;box-shadow:0 0 26px 3px rgba(46,168,228,.6),inset 0 0 26px rgba(46,168,228,.45);
+  border:1px solid rgba(46,168,228,.45);pointer-events:none}
+.stage-ring::after{content:"";position:absolute;inset:-1px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,255,255,.09),rgba(255,255,255,0));
   opacity:0;transition:opacity .4s var(--ease)}
 .stage-ring.glow::after{opacity:1;transition-duration:.15s}
 /* sequenced handover: the outgoing machine leaves (.3 s), then the next one comes in (no double exposure) */
@@ -544,3 +542,42 @@ html:not(.ready) .show-ctl{visibility:hidden}
 .foot{isolation:isolate}
 .foot>:not(.air){position:relative;z-index:1}
 @media (prefers-reduced-motion:reduce){.ctl-play{display:none}.road-pulse{display:none!important}.stage-ring::after{display:none}}
+
+/* =================== finish-review fix batch (21 Nov 2026) =================== */
+/* 2. handover on two paths: the outgoing machine slides out left (.35 s) while the next one slides in from the right,
+      starting .15 s into the exit (.7 s), so the turntable is never empty and the two never sit on the same spot */
+/* (the exit starts fast so it has cleared the middle before the entrance arrives; measured, no same-spot frames) */
+.pm{transform:translate3d(22%,1%,0) scale(.94)}
+.pm.is-out{transform:translate3d(-26%,1%,0) scale(.94);transition:opacity .32s cubic-bezier(.1,.3,.5,1),transform .35s cubic-bezier(.25,.6,.5,1),visibility 0s .35s}
+.pm.is-on{transition:opacity .45s cubic-bezier(.2,.6,.4,1) .13s,transform .7s cubic-bezier(.16,1,.3,1) .13s,visibility 0s}
+/* 3. process: pending step circles are opaque (the path passes behind them); the panel reads against the page */
+.scene.proc{background:linear-gradient(180deg,rgba(225,232,241,.94),rgba(213,222,234,.96));box-shadow:inset 0 0 0 1px rgba(11,22,38,.10)}
+.js .node .dot{opacity:1;background:#E1E8F1;color:rgba(11,22,38,.5);border-color:rgba(21,112,184,.4);
+  transition:transform .7s var(--ease),background-color .5s,color .5s,border-color .5s}
+.js .node.on .dot,.js.rv-fail .node .dot{background:#fff;color:var(--ink);border-color:var(--blue-d)}
+/* 4. drivetrain: the German facts as one rule-separated list, not boxes inside the scene */
+.spec,.drive .spec{padding:14px 4px;border:0;border-top:1px solid rgba(255,255,255,.18);border-radius:0;background:none;box-shadow:none}
+.specs .spec:last-child{border-bottom:1px solid rgba(255,255,255,.18)}
+.specs{gap:0}
+.spec h3{margin-bottom:4px}
+.drive-cap{font:500 1.05rem/1.3 var(--disp);letter-spacing:.12em;text-transform:uppercase;color:#BDD3EA}
+/* 6. no grid texture: the airflow is the background now */
+/* the ring: a neutral pool of light on the floor; at a handover the ring line itself brightens briefly */
+.stage-ring{transition:border-color .4s var(--ease)}
+.stage-ring::after{box-shadow:none;background:radial-gradient(closest-side,rgba(255,255,255,.09),rgba(255,255,255,0));opacity:1}
+.stage-ring.glow{border-color:rgba(255,255,255,.8);transition-duration:.12s}
+/* 7. the range ends on a compact call-to-action card, not an empty slab */
+.track>li:last-child{align-self:center;margin-top:0}
+.card.card-end{height:auto;width:clamp(220px,62vw,260px);gap:22px;justify-content:flex-start;padding:24px 22px}
+.card-end-t{font-size:1.6rem}
+/* 8. phones: a shorter hero (the range heading peeks) and a lower floor line close the gap above the machine */
+@media (max-width:767px){
+  .hero{height:max(540px,min(calc(100svh - var(--hdr) - 8px),700px))}
+  .show{padding-left:8px;padding-right:8px}
+  .pm-par{padding-bottom:9cqh}
+  .stage-ring{bottom:3.5cqh}
+  .tt-hero{width:min(100cqw,calc(72cqh * var(--ar)),calc(var(--nw,4000) * 1.5px / var(--dpr)))}
+  .show-ctl{padding-left:30px}
+}
+/* numbers: keep the team's faces in frame on wide screens */
+@media (min-width:1024px){.panel-img img{object-position:50% 22%}}
